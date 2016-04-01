@@ -1,0 +1,16 @@
+doctype
+html
+  head
+    title Hacker news
+    link(href="static/css/app.css", type="text/css", rel='stylesheet')
+    link(href="static/css/leaflet.css", type="text/css", rel='stylesheet')
+    link(href="static/css/font.css", type="text/css", rel='stylesheet')
+    link(href="https://fonts.googleapis.com/css?family=Roboto:400,400italic,700", type="text/css", rel="stylesheet")
+    link(rel="shortcut icon", href="/static/images/favicon.ico")
+
+  body
+    div#content
+        div(id='react-root')!= app
+
+    script(src='/static/js/app.js')
+    script(src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCf3c3Ica2AWircgkTjlqxheiF642V3CRY&signed_in=true")
