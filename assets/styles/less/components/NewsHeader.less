@@ -28,9 +28,15 @@ body {
 
 .newsHeader-navLink:not(:first-child)::before {
   content: ' | ';
+  color: black;
+}
+
+.newsHeader-textLink.selected {
+  color: white;
 }
 
 .newsHeader-textLink {
+  cursor: pointer;
   color: black;
   text-decoration: none;
 }

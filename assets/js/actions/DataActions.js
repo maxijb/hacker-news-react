@@ -1,5 +1,4 @@
-/* Actions related to the app's sidebar.
-   Includes searchbox and item list
+/* Actions related to the app's data.
 */ 
 
 import {default as pubsub} from '../dispatcher/Dispatcher';
@@ -10,51 +9,67 @@ import {default as Service} from './Service';
 var DataActions = (function() {
 
 
-  /* Request more item to the sidebar,
-    @param setNewItems (boolean) tells wheter shoudl erase old items
-    @parma type (string) tyoe of items
-    @param options (object) filtering options
-    */
-  const requestItems = (setNewItems, type, options) => {
+  /* Update url with pushState or hash
+     according to the filtering params */
+  const updateURL = (type, offset) => {
     
-    pubsub.emit(setNewItems ? actions.sidebarItemsWillBeSet : actions.sidebarItemsWillBeAdded);
+    if (type == "top" && offset == 1) return;
 
-      fetch(urls[type] + queryString(options))
+    //modern browsers
+    if (history && history.pushState) {
+      history.pushState(false, {}, `/${type}?page=${offset}`);
+    } else {
+      //old browsers
+      window.location.hash = `${type}&page=${offset}`;
+    }
+  }
+
+
+  /* Request items to show
+    @parma type (string) tyoe of items
+    @param offset (int) page offset
+    */
+  const requestItems = (type, offset=1) => {
+
+    updateURL(type, offset);
+    pubsub.emit(actions.itemsWillBeSet, type);
+
+    Service
+      .getStories(type, offset)
       .then((response) => {
-         return response.json()
-      })
-      .then(data => {
-        let event = setNewItems ? actions.setSidebarItems : actions.addSidebarItems;
-        pubsub.emit(event, data);
+        pubsub.emit(actions.itemsLoaded, response);
       });
 
   }
 
 
-  /* Change type of item in the searchbox
-     @param type [movies|writters|director|actors|districts]
-     */
-  const changeType = (type) => {
-     requestItems(true, type);
+  /* First load of the app. Parse URL and request items */
+  const appLoad = () => {
+    let type, offset;
+
+    //modern browsers
+    if (history && history.pushState && !window.location.hash) {
+      type = window.location.pathname.substr(1);
+      offset = window.location.search.split('=')[1]
+    } 
+
+    //hash overrides push states (someone could share an url from an old browser)
+    if (window.location.hash) {
+      let hash = window.location.hash.split('?');
+      if (hash.length > 1) {
+        type = hash[0].substr(1);
+        offset = hash[1].split('=')[1];
+      }
+    }
+
+    requestItems(type || "top", offset || 1);
   }
-  
 
-  /* Select one new filter 
-     @param filter (object)
-  */
-  const selectFilter = (filter) => {
-    pubsub.emit(actions.addFilter, filter);
-  }
-
-
-/* Subscribe to appLoad and request the first load of items */
-  pubsub.on(actions.appLoad, requestItems.bind(this, true, 'movies'));
 
   /* Exposed methods */
   return {
     requestItems,
-    changeType,
-    selectFilter
+    appLoad
   }
 
 

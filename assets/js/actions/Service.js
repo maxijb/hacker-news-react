@@ -1,47 +1,68 @@
 import Firebase from 'firebase';
+import {itemsPerPage} from '../constants/Constants';
 
 const api = new Firebase('https://hacker-news.firebaseio.com/v0');
 
-function fetchItem(id, cb) {
-  itemRef(id).once('value', function(snapshot) {
-    cb(snapshot.val())
-  })
+///////////////////////////////////
+//We'll store the actual data here
+let _items = [];
+let _type = "";
+///////////////////////////////////
+
+/* Requests data for an specific item 
+@param id (number)
+*/
+function itemRef(id) {
+  return api.child('item/' + id).once('value');
 }
 
-function fetchItems(ids, cb) {
-  var items = []
-  ids.forEach(function(id) {
-    fetchItem(id, addItem)
-  })
-  function addItem(item) {
-    items.push(item)
-    if (items.length >= ids.length) {
-      cb(items)
-    }
+
+/* Requests details for a list of items
+according to the desired offset
+@param offset (number) pagination */
+function getDetailedStories(offset = 1) {
+  let promises = [];
+
+  let min = (offset - 1) * itemsPerPage;
+  let max = min + itemsPerPage;
+
+  //create an array of promises for each individual item
+  for (let i = min; i < max; i++ ) {
+    promises.push(itemRef(_items[i]));
+  }
+
+  //when they are all resolved, return data for all of them
+  return Promise.all(promises)
+    .then(response => {
+      return {
+        type: _type,
+        offset,
+        items: response.map(x => x.val()).filter(x=> !!x)
+      }
+    });
+}
+
+
+/* Request topstories, with the desired type and offset
+@param type (string)
+@param offset (number)
+*/
+function getStories(type, offset = 1) {
+  if (type != _type) {
+    _type = type;
+    return api.child(type + 'stories')
+          .once('value')
+          .then(response => {
+            _items = response.val();
+            return getDetailedStories(offset);
+          });
+  } else {
+    return getDetailedStories(offset);
   }
 }
 
-function storiesRef(path) {
-  return api.child(path)
-}
 
-function itemRef(id) {
-  return api.child('item/' + id)
-}
-
-function userRef(id) {
-  return api.child('user/' + id)
-}
-
-function updatesRef() {
-  return api.child('updates/items')
-}
-
+//Exposed API
 export default {
-  fetchItem,
-  fetchItems,
-  storiesRef,
-  itemRef,
-  userRef,
-  updatesRef
+  getStories
 }

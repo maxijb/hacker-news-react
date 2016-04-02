@@ -69,8 +69,13 @@ body {
 }
 .newsHeader-navLink:not(:first-child)::before {
   content: ' | ';
+  color: black;
+}
+.newsHeader-textLink.selected {
+  color: white;
 }
 .newsHeader-textLink {
+  cursor: pointer;
   color: black;
   text-decoration: none;
 }
@@ -130,10 +135,24 @@ body {
   margin-top: 10px;
   padding-bottom: 10px;
 }
+.newsList-nomoreLink {
+  color: black;
+  font-size: 10pt;
+  text-decoration: none;
+  cursor: normal;
+}
 .newsList-moreLink {
   color: black;
   font-size: 10pt;
   text-decoration: none;
+  cursor: pointer;
+}
+.loading {
+  margin: 25px;
+}
+.loading * {
+  vertical-align: middle;
+  margin-right: 10px;
 }
 
 /**

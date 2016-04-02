@@ -4,6 +4,14 @@ var moment = require('moment');
 
 
 var NewsItem = React.createClass({
+
+  propTypes: {
+    item: React.PropTypes.object.isRequired,
+    rank: React.PropTypes.number
+  },
+
+
+  /* Render comment text */
   getCommentLink: function () {
     var commentText = 'discuss';
     if (this.props.item.kids && this.props.item.kids.length) {
@@ -15,18 +23,13 @@ var NewsItem = React.createClass({
     );
   },
 
+  /* Render domain, if available */
   getDomain: function () {
-    return url.parse(this.props.item.url).hostname;
+    return this.props.item.url ? '('+url.parse(this.props.item.url).hostname+')' : "";
   },
 
-  getRank: function () {
-    return (
-      <div className="newsItem-rank">
-        {this.props.rank}.
-      </div>
-    );
-  },
 
+  /* Render subtext */
   getSubtext: function () {
     return (
       <div className="newsItem-subtext">
@@ -35,32 +38,30 @@ var NewsItem = React.createClass({
     );
   },
 
+  /* Render title */
   getTitle: function () {
     return (
       <div className="newsItem-title">
         <a className="newsItem-titleLink" href={this.props.item.url}>{this.props.item.title}</a>
         <span className="newsItem-domain">
-          ({this.getDomain()})
+          {this.getDomain()}
         </span>
       </div>
     );
   },
 
-  getVote: function () {
-    return (
-      <div className="newsItem-vote">
-        <a href={'https://news.ycombinator.com/vote?for=' + this.props.item.id + '&dir=up&whence=news'}>
-          <img src="../img/grayarrow2x.gif" width="10"/>
-        </a>
-      </div>
-    );
-  },
 
   render: function () {
     return (
       <div className="newsItem">
-        {this.getRank()}
-        {this.getVote()}
+        <div className="newsItem-rank">
+           {this.props.rank}.
+        </div>
+        <div className="newsItem-vote">
+          <a href={'https://news.ycombinator.com/vote?for=' + this.props.item.id + '&dir=up&whence=news'}>
+            <img src="/static/images/grayarrow.gif" width="10"/>
+          </a>
+        </div>
         <div className="newsItem-itemText">
           {this.getTitle()}
           {this.getSubtext()}

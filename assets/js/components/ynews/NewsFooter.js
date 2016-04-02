@@ -1,3 +1,5 @@
+/* Static footer extracted from Ycombinator */
+
 import React from 'react';
 
 const NewsFooter = React.createClass({
@@ -6,14 +8,14 @@ const NewsFooter = React.createClass({
     return (
      <center id="footer">
         <span className="yclinks">
-          <a href="newsguidelines.html">Guidelines</a>
-        | <a href="newsfaq.html">FAQ</a>
+          <a href="https://news.ycombinator.com/newsguidelines.html">Guidelines</a>
+        | <a href="https://news.ycombinator.com/newsfaq.html">FAQ</a>
         | <a href="mailto:hn@ycombinator.com">Support</a>
         | <a href="https://github.com/HackerNews/API">API</a>
-        | <a href="security.html">Security</a>
-        | <a href="lists">Lists</a>
-        | <a href="bookmarklet.html">Bookmarklet</a>
-        | <a href="dmca.html">DMCA</a>
+        | <a href="https://news.ycombinator.com/security.html">Security</a>
+        | <a href="https://news.ycombinator.com/lists">Lists</a>
+        | <a href="https://news.ycombinator.com/bookmarklet.html">Bookmarklet</a>
+        | <a href="https://news.ycombinator.com/dmca.html">DMCA</a>
         | <a href="http://www.ycombinator.com/apply/">Apply to YC</a>
         | <a href="mailto:hn@ycombinator.com">Contact</a>
         </span>

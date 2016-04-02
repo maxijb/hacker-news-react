@@ -2,16 +2,19 @@ import React from 'react';
 
 const NewsHeader = React.createClass({
   
+  propTypes: {
+    selected: React.PropTypes.string,
+    changeType: React.PropTypes.func
+  },
+
+
+  /* Default props include the 4 categories of queries */
   getDefaultProps() {
     return {
       navLinks: [
         {
           name: 'new',
-          url: 'newest'
-        },
-        {
-          name: 'comments',
-          url: 'newcomments'
+          url: 'new'
         },
         {
           name: 'show',
@@ -23,20 +26,31 @@ const NewsHeader = React.createClass({
         },
         {
           name: 'jobs',
-          url: 'jobs'
-        },
-        {
-          name: 'submit',
-          url: 'submit'
+          url: 'job'
         }
       ]
     }
   },
 
+  //Click on the header menu items
+  //changes type of posts displayed
+  //@param type (string) 
+  //@param event (event)
+  changeType(type, event) {
+    event.preventDefault();
+    //only trigger callback if the type is different
+    if (type != this.props.selected) this.props.changeType(type);
+  },
+
+
+  /* Renders the navigation on the header */
   getNav() {
+
       return this.props.navLinks.map(navLink => {
           return (
-            <a key={navLink.url} className="newsHeader-navLink newsHeader-textLink" href={'https://news.ycombinator.com/' + navLink.url}>
+            <a key={navLink.url} 
+                className={"newsHeader-navLink newsHeader-textLink " + (this.props.selected == navLink.url ? "selected" : "")}
+                onClick={this.changeType.bind(this, navLink.url)}>
               {navLink.name}
             </a>
           );
@@ -49,21 +63,17 @@ const NewsHeader = React.createClass({
       <div className="newsHeader">
         
         <div className="newsHeader-logo">
-          <a href="https://www.ycombinator.com"><img src="/static/images/y18.gif"/></a>
+          <a href="/"><img src="/static/images/y18.gif"/></a>
         </div>
 
         <div className="newsHeader-title">
-           <a className="newsHeader-textLink" href="https://news.ycombinator.com">Hacker News</a>
+           <a className="newsHeader-textLink" href="/">Hacker News</a>
         </div>
 
         <div className="newsHeader-nav">
           {this.getNav()}
         </div>
 
-        <div className="newsHeader-login">
-          <a className="newsHeader-textLink" href="https://news.ycombinator.com/login?whence=news">login</a>
-        </div>
-     
       </div>
     );
   }
