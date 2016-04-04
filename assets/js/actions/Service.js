@@ -11,6 +11,7 @@ let _type = "";
 
 /* Requests data for an specific item 
 @param id (number)
+@return promise
 */
 function itemRef(id) {
   return api.child('item/' + id).once('value');
@@ -19,7 +20,9 @@ function itemRef(id) {
 
 /* Requests details for a list of items
 according to the desired offset
-@param offset (number) pagination */
+@param offset (number) pagination 
+@return promises
+*/
 function getDetailedStories(offset = 1) {
   let promises = [];
 
@@ -46,8 +49,10 @@ function getDetailedStories(offset = 1) {
 /* Request topstories, with the desired type and offset
 @param type (string)
 @param offset (number)
+@return promise
 */
 function getStories(type, offset = 1) {
+  //if type has changed request new items
   if (type != _type) {
     _type = type;
     return api.child(type + 'stories')
@@ -57,6 +62,7 @@ function getStories(type, offset = 1) {
             return getDetailedStories(offset);
           });
   } else {
+    //otherwise just request details for existing items
     return getDetailedStories(offset);
   }
 }
