@@ -67,7 +67,6 @@ let App = React.createClass({
             loading={this.state.loading} 
             offset={this.state.offset} 
             changeOffset={this.changeOffset}
-            serverSide={typeof window === "undefined"}
             />
         <NewsFooter />
     	</div>

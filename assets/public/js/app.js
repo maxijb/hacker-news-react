@@ -273,8 +273,7 @@ var App = _react2.default.createClass({
       _react2.default.createElement(_NewsList2.default, { items: this.state.items,
         loading: this.state.loading,
         offset: this.state.offset,
-        changeOffset: this.changeOffset,
-        serverSide: typeof window === "undefined"
+        changeOffset: this.changeOffset
       }),
       _react2.default.createElement(_NewsFooter2.default, null)
     );
@@ -675,13 +674,24 @@ var NewsList = _react2.default.createClass({
     items: _react2.default.PropTypes.array,
     loading: _react2.default.PropTypes.bool,
     offset: _react2.default.PropTypes.number,
-    changeOffset: _react2.default.PropTypes.func,
-    serverSide: _react2.default.PropTypes.bool
+    changeOffset: _react2.default.PropTypes.func
   },
+
+  componentDidMount: function componentDidMount() {
+    this.state.firstRender = false;
+  },
+
 
   /*Default props */
   getDefaultProps: function getDefaultProps() {
     return { items: [] };
+  },
+  getInitialState: function getInitialState() {
+    //when first render is true, the component doen't render the "no more results" message
+    //happens both server and client side
+    return {
+      firstRender: true
+    };
   },
 
 
@@ -722,7 +732,7 @@ var NewsList = _react2.default.createClass({
             'a',
             { className: 'newsList-moreLink', onClick: _this.changeOffset.bind(_this, _this.props.offset + 1) },
             'More'
-          );else if (!_this.props.serverSide && !_this.props.loading && !_this.props.length) return _react2.default.createElement(
+          );else if (!_this.state.firstRender && !_this.props.loading && !_this.props.length) return _react2.default.createElement(
             'a',
             { className: 'newsList-nomoreLink' },
             'No more results'

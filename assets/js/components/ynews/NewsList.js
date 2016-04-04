@@ -9,13 +9,25 @@ const NewsList = React.createClass({
     items: React.PropTypes.array,
     loading: React.PropTypes.bool,
     offset: React.PropTypes.number,
-    changeOffset: React.PropTypes.func,
-    serverSide: React.PropTypes.bool
+    changeOffset: React.PropTypes.func
+  },
+
+
+  componentDidMount() {
+    this.state.firstRender = false;
   },
 
   /*Default props */
   getDefaultProps() {
     return {items: []}
+  },
+
+  getInitialState() {
+    //when first render is true, the component doen't render the "no more results" message
+    //happens both server and client side
+    return {
+      firstRender: true
+    }
   },
 
   /* Changes the pagination 
@@ -53,7 +65,7 @@ const NewsList = React.createClass({
           {(() => {
             if (this.props.items.length && this.props.offset < maxOffset) 
                   return (<a className="newsList-moreLink" onClick={this.changeOffset.bind(this, (this.props.offset +1)) }>More</a>) 
-            else if (!this.props.serverSide && !this.props.loading && !this.props.length)
+            else if (!this.state.firstRender && !this.props.loading && !this.props.length)
                   return (<a className="newsList-nomoreLink">No more results</a>) 
           })()}
         </div>
