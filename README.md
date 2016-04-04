@@ -27,6 +27,8 @@ $ grunt build
 The flow of the data in the frontend uses a "flux-like" approach. As the views are rendered by React, these call actions on the action creators. These "action creators" are encharged of communicating with the server and trigger actions that modify the stated of the "stores".   
 Between actions and stores, the dispatcher publishes the events. For the scope of this app, we didn't need all the overhead of the Facebook's dispatcher, and ended up using Node's standard Pub/Sub module.    
 
+The initial view is rendered server side, including the React 'App' component into the static Jade view. Then, the rest of the application works cliente side, rendering the data loaded by AJAX. The state is kept in the URL using history.pushState (where available) and falling back to a hash fragment in old browsers.
+
 
 **What could be improved**
 - For the sake of simplicity, I printed English texts, where we usually would include variables that could be easily internationalized. 
